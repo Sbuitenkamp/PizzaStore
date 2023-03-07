@@ -12,7 +12,8 @@ public class Pizza
         Toppings = new List<Topping>
         {
             new Topping("Bodem", 1),
-            new Topping("Tomatensaus", 1)
+            new Topping("Tomatensaus", 1),
+            new Topping("Kaas", 1)
         };
     }
 
