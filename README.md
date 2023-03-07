@@ -1,1 +1,2 @@
 # PizzaStore
+### Design pattern: builder
