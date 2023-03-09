@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Net;
+using PizzaStore.Data;
 using PizzaStore.Models;
 
 namespace PizzaStore
@@ -8,19 +9,14 @@ namespace PizzaStore
     {
         public static void Main(string[] args)
         {
-            // // test data
-            // Customer customer = new Customer("TestCustomer", "Leeuwarden", "Rengerslaan", "10", "8917 DD");
-            // List<Topping> tonno = new List<Topping>
-            // {
-            //     new Topping("Tonijn", 3),
-            //     new Topping("Ui", 1),
-            // };
-            // Pizza pizza = new Pizza("Tonno");
-            // pizza.BuildPizza(tonno);
-            // pizza.RemoveTopping("Tonijn");
-            // Order order = new Order(customer);
-            // order.AddPizza(pizza);
-            //
+            // test data
+            // todo send this via HTTP
+            Customer customer = Customer.GetInstance("TestCustomer", "Leeuwarden", "Rengerslaan", "10", "8917 DD");
+            Pizza pizza = new Pizza(PizzaName.Tonno, 1);
+            pizza.VisitLibrary();
+            Order order = new Order(customer);
+            order.AddPizza(pizza);
+            
             // Console.WriteLine(order.ToString());
             WebServer.Init();
         }

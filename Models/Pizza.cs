@@ -1,47 +1,49 @@
+using System.Diagnostics;
+using PizzaStore.Data;
+
 namespace PizzaStore.Models;
 
-public class Pizza
+public class Pizza : Ingredient
 {
-    private string Name;
-    private List<Topping> Toppings;
-
-    public Pizza(string name)
+    private List<Ingredient> Ingredients;
+    private PizzaName Type;
+    public Pizza(PizzaName name, int amount) : base(name.ToString(), amount)
     {
-        this.Name = name;
+        this.Type = name;
         // every pizza has these base ingredients
-        Toppings = new List<Topping>
+        Ingredients = new List<Ingredient>
         {
-            new Topping("Bodem", 1),
-            new Topping("Tomatensaus", 1),
-            new Topping("Kaas", 1)
+            new Dough(),
+            new Sauce(),
+            new Topping(ToppingNames.Kaas, 1)
         };
     }
     
-    public void BuildPizza(List<Topping> toppings)
+    public void VisitLibrary()
     { 
-        this.Toppings.AddRange(toppings);
-        
+        // visit the ingredient library and gather ingredients based on the pizza type
+        this.Ingredients.AddRange(IngredientLibrary.GatherIngredients(this.Type));
     }
 
-    // builder design pattern
-    public void AddTopping(Topping topping)
+    // add extra toppings 
+    public void AddTopping(ToppingNames topping)
     {
-        Topping hasTopping = Toppings.Find(x => x.Name == topping.Name); // reference
-        if (hasTopping != null) hasTopping.AddOne();
-        else this.Toppings.Add(topping);
+        Ingredient hasIngredient = Ingredients.Find(x => x.Name == topping.ToString());
+        if (hasIngredient != null) hasIngredient.AddOne();
+        else this.Ingredients.Add(new Topping(topping, 1));
     }
 
-    public void RemoveTopping(string toppingName)
+    public void RemoveTopping(ToppingNames topping)
     {
-        Topping hasTopping = Toppings.Find(x => x.Name == toppingName); // reference
-        if (hasTopping != null) hasTopping.MinusOne();
-        if (hasTopping.Amount == 0) Toppings.Remove(Toppings.Find(x => x.Name == toppingName));
+        Ingredient hasIngredient = Ingredients.Find(x => x.Name == topping.ToString()); // reference
+        if (hasIngredient != null) hasIngredient.MinusOne();
+        if (hasIngredient.Amount == 0) Ingredients.Remove(Ingredients.Find(x => x.Name == topping.ToString()));
     }
 
     public override string ToString()
     {
         string result = $"Pizza: {this.Name}\n Toppings:\n";
-        foreach (Topping topping in this.Toppings) result += $"  {topping.Name} x{topping.Amount}\n";
+        foreach (Ingredient ingredient in this.Ingredients) result += $"  {ingredient.Name} x{ingredient.Amount}\n";
         return result;
     }
 }
