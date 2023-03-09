@@ -22,7 +22,9 @@ namespace PizzaStore
             // order.AddPizza(pizza);
             //
             // Console.WriteLine(order.ToString());
-            WebServer.Init();
+            // WebServer.Init();
+            WebServer.TcpConnect();
         }
     }
+    
 }
