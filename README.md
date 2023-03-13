@@ -8,7 +8,7 @@ Secure Design Pattern:
  - input validation
 
 ## Running the web socket server
-Navigate to `Web/WebSocketServer` and run the command
+Navigate to `Web/WebSocketServer/` and run the command
 ```sh
 dotnet watch run WebSocketServer.csproj
 ```
