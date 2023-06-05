@@ -2,24 +2,30 @@ namespace PizzaStore.Models;
 
 public class Order
 {
-    private Customer OrderCustomer;
-    private List<Pizza> Pizzas;
-
+    public Customer OrderCustomer { get; private set; }
+    private List<PizzaAmount> Pizzas { get; set; }
+    private DateTime TimeOfOrder { get; set; }
+    
+    public Order() {}
     public Order(Customer customer)
     {
         this.OrderCustomer = customer;
-        this.Pizzas = new List<Pizza>();
+        this.TimeOfOrder = DateTime.Now;
+        this.Pizzas = new List<PizzaAmount>();
     }
 
-    public void AddPizza(Pizza pizza)
+    public void AddPizza(Pizza pizza, int amount = 1) // optional parameter
     {
-        this.Pizzas.Add(pizza);
+        PizzaAmount amountOfPizzas = new PizzaAmount(amount, pizza);
+        this.Pizzas.Add(amountOfPizzas);
+
     }
 
     public override string ToString()
     {
-        string result = this.OrderCustomer.ToString() + "\n";
-        foreach (Pizza pizza in Pizzas) result += pizza.ToString();
+        string result = "";
+        foreach (PizzaAmount pizzaAmount in Pizzas) result += pizzaAmount.Amount + " " + pizzaAmount.PizzaType.ToString();
+        result += "Besteld op:" + TimeOfOrder;
         return result;
     }
 }

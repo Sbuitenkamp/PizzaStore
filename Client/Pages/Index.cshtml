@@ -1,4 +1,5 @@
-﻿@page
+﻿@page "{handler?}"
+@using PizzaStore.Data
 @model IndexModel
 @{
     ViewData["Title"] = "Home page";
@@ -9,9 +10,61 @@
 <head>
     <meta charset="UTF-8">
     <title>Pizza Store</title>
+    <script defer src="js/main.js"></script>
 </head>
 <body>
-    <script defer src="js/main.js"></script>
-    <h1>Bizza Store</h1>
+    <h1>Pizza Store</h1>
+<button onclick="openConnection()" style="margin-right: 60%">Upgrade Connection</button>
+<div class="left" style="float: left">
+
+@if (!Model.Order) {
+    <form method="post" asp-page-handler="Customer">
+        <label for="Name">Naam:
+            <input asp-for="Name">
+        </label>
+        <br>
+        <label for="Street">Straatnaam:
+            <input asp-for="Street">
+        </label>
+        <br>
+        <label for="HouseNumber">Straatnummer:
+            <input asp-for="HouseNumber">
+        </label>
+        <br>
+        <label for="ZipCode">Postcode:
+            <input asp-for="ZipCode">
+        </label>
+        <br>
+        <label for="Town">Woonplaats:
+            <input asp-for="Town">
+        </label>
+        <br>
+        <input type="submit" value="Verder">
+    </form>
+} else  {
+    <form method="post" asp-page-handler="AddPizza">
+        <label for="PizzaName">Selecteer een pizza:
+            <select asp-for="PizzaName">
+                @foreach (int pizzaName in Enum.GetValues(typeof(PizzaName))) {
+                    <option value="@pizzaName">@Enum.GetName(typeof(PizzaName), pizzaName)</option>
+                }
+            </select>
+        </label>
+        <br>
+        <label for="Amount">Aantal pizzas:
+            <input type="number" name="amount" id="Amount">
+        </label>
+        <input type="submit" value="Toevoegen">
+    </form>
+}
+</div>
+
+@if (Model.Order) {
+    <div class="right" style="float: right">
+        <h1>Bestellingoverzicht</h1>
+        <p>Bezorgen bij: @Model.CurrentOrder.OrderCustomer.ToString()</p>
+        <p>@Model.CurrentOrder.ToString()</p>
+    </div>
+}
 </body>
 </html>

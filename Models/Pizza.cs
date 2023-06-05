@@ -7,7 +7,7 @@ public class Pizza : Ingredient
 {
     private List<Ingredient> Ingredients;
     private PizzaName Type;
-    public Pizza(PizzaName name, int amount) : base(name.ToString(), amount)
+    public Pizza(PizzaName name, int amount = 1) : base(name.ToString(), amount)
     {
         this.Type = name;
         // every pizza has these base ingredients

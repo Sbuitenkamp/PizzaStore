@@ -2,38 +2,19 @@ using System.Net;
 using System.Net.WebSockets;
 using System.Text;
 
-var builder = WebApplication.CreateBuilder(args);
-var app = builder.Build();
+WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
+WebApplication app = builder.Build();
 
 app.UseWebSockets();
 app.Map("/ws", async context =>
 {
-    if (context.WebSockets.IsWebSocketRequest)
-    {
-        using var webSocket = await context.WebSockets.AcceptWebSocketAsync();
-        var rand = new Random();
+    if (context.WebSockets.IsWebSocketRequest) {
+        using WebSocket webSocket = await context.WebSockets.AcceptWebSocketAsync();
 
-        while (true)
-        {
-            var now = DateTime.Now;
-            byte[] data = Encoding.ASCII.GetBytes($"{now}");
-            await webSocket.SendAsync(data, WebSocketMessageType.Text, 
-                true, CancellationToken.None);
-            await Task.Delay(1000);
-
-            long r = rand.NextInt64(0, 10);
-
-            if (r == 7)
-            {
-                await webSocket.CloseAsync(WebSocketCloseStatus.NormalClosure,
-                    "random closing", CancellationToken.None);
-
-                return;
-            }
-        }
-    }
-    else
-    {
+        byte[] data = Encoding.ASCII.GetBytes($"aaaaaaaaaaa");
+        await webSocket.SendAsync(data, WebSocketMessageType.Text, true, CancellationToken.None);
+        await webSocket.CloseAsync(WebSocketCloseStatus.NormalClosure, "random closing", CancellationToken.None);
+    } else {
         context.Response.StatusCode = (int)HttpStatusCode.BadRequest;
     }
 });

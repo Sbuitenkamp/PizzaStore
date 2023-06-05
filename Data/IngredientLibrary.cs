@@ -10,7 +10,7 @@ public static class IngredientLibrary
         List<Ingredient> ingredients = new List<Ingredient>();
 
         switch (name) {
-            case PizzaName.Prosciutto: // fallthrough
+            case PizzaName.Prosciutto:
                 ingredients.Add(new Topping(ToppingNames.Ham, 1));
                 break;
             case PizzaName.Salame:

@@ -17,7 +17,7 @@ public class Customer
 
     public static Customer GetInstance(string name, string city, string street, string houseNumber, string zipCode)
     {
-        return Instance ??= new Customer(name, city, street, houseNumber, zipCode);
+        return Instance = new Customer(name, city, street, houseNumber, zipCode);
     }
 
     public static Customer GetInstance()
