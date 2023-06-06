@@ -22,6 +22,9 @@ public static class IngredientLibrary
             case PizzaName.Vulcano:
                 ingredients.Add(new Topping(ToppingNames.Champignons, 1));
                 goto case PizzaName.Prosciutto;
+            case PizzaName.Tonno:
+                ingredients.Add(new Topping(ToppingNames.Tonijn, 1));
+                break;
         }
 
         return ingredients;

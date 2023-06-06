@@ -3,8 +3,8 @@ namespace PizzaStore.Models;
 public class Order
 {
     public Customer OrderCustomer { get; private set; }
-    private List<PizzaAmount> Pizzas { get; set; }
-    private DateTime TimeOfOrder { get; set; }
+    public List<PizzaAmount> Pizzas { get; private set; }
+    public DateTime TimeOfOrder { get; private set; }
     
     public Order() {}
     public Order(Customer customer)
@@ -24,7 +24,7 @@ public class Order
     public override string ToString()
     {
         string result = "";
-        foreach (PizzaAmount pizzaAmount in Pizzas) result += pizzaAmount.Amount + " " + pizzaAmount.PizzaType.ToString();
+        foreach (PizzaAmount pizzaAmount in Pizzas) result += pizzaAmount.Amount + " " + pizzaAmount.PizzaType.ToString() + "\n";
         result += "Besteld op:" + TimeOfOrder;
         return result;
     }

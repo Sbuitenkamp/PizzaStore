@@ -26,11 +26,13 @@ public class Pizza : Ingredient
     }
 
     // add extra toppings 
-    public void AddTopping(ToppingNames topping)
+    public void AddTopping(ToppingNames topping, int amount = 1)
     {
         Ingredient hasIngredient = Ingredients.Find(x => x.Name == topping.ToString());
-        if (hasIngredient != null) hasIngredient.AddOne();
-        else this.Ingredients.Add(new Topping(topping, 1));
+        if (hasIngredient != null) {
+           if (amount == 1) hasIngredient.AddOne();
+           else hasIngredient.AddAmount(amount);
+        } else this.Ingredients.Add(new Topping(topping, amount));
     }
 
     public void RemoveTopping(ToppingNames topping)
@@ -42,8 +44,11 @@ public class Pizza : Ingredient
 
     public override string ToString()
     {
-        string result = $"Pizza: {this.Name}\n Toppings:\n";
-        foreach (Ingredient ingredient in this.Ingredients) result += $"  {ingredient.Name} x{ingredient.Amount}\n";
+        string result = $"{this.Name}\n\nToppings:";
+        foreach (Ingredient ingredient in this.Ingredients) {
+            if (ingredient is Dough) continue;
+            result += $"  {ingredient.Name} x{ingredient.Amount}\n";
+        }
         return result;
     }
 }

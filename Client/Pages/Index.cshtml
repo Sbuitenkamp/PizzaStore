@@ -1,5 +1,7 @@
 ﻿@page "{handler?}"
 @using PizzaStore.Data
+@using System.Globalization
+@using PizzaStore.Models
 @model IndexModel
 @{
     ViewData["Title"] = "Home page";
@@ -15,7 +17,7 @@
 <body>
     <h1>Pizza Store</h1>
 <button onclick="openConnection()" style="margin-right: 60%">Upgrade Connection</button>
-<div class="left" style="float: left">
+<div class="left" style="float: left; width:  50%;">
 
 @if (!Model.Order) {
     <form method="post" asp-page-handler="Customer">
@@ -49,10 +51,17 @@
                     <option value="@pizzaName">@Enum.GetName(typeof(PizzaName), pizzaName)</option>
                 }
             </select>
+            <br>
+            @foreach (int topping in Enum.GetValues(typeof(ToppingNames))) {
+                <input name="ExtraToppings[@topping].ToppingName" type="hidden" value="@topping"/>
+                <input name="ExtraToppings[@topping].Add" type="checkbox" value="true"/>@Enum.GetName(typeof(ToppingNames), topping)
+                <input name="ExtraToppings[@topping].Amount" type="number" value="1"/>
+                <br>
+            }
         </label>
         <br>
         <label for="Amount">Aantal pizzas:
-            <input type="number" name="amount" id="Amount">
+            <input type="number" name="amount" id="Amount" value="1">
         </label>
         <input type="submit" value="Toevoegen">
     </form>
@@ -60,10 +69,13 @@
 </div>
 
 @if (Model.Order) {
-    <div class="right" style="float: right">
+    <div class="right" style="float: right; width:  50%;">
         <h1>Bestellingoverzicht</h1>
         <p>Bezorgen bij: @Model.CurrentOrder.OrderCustomer.ToString()</p>
-        <p>@Model.CurrentOrder.ToString()</p>
+        @foreach (PizzaAmount pizzaAmount in Model.CurrentOrder.Pizzas) {
+            <p>@pizzaAmount.Amount @pizzaAmount.PizzaType.ToString()</p>
+        }
+        <p>Besteld op: @Model.CurrentOrder.TimeOfOrder.ToString(CultureInfo.CurrentCulture)</p>
     </div>
 }
 </body>

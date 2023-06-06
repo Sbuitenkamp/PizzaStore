@@ -10,6 +10,11 @@ public abstract class Ingredient
         this.Name = name;
         this.Amount = amount;
     }
+
+    public void AddAmount(int amount)
+    {
+        if (this is Topping) this.Amount += amount;
+    }
     
     public void AddOne()
     {

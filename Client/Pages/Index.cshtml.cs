@@ -26,6 +26,8 @@ public class IndexModel : PageModel
     public string Town { get; set; }
     [BindProperty]
     public int PizzaName { get; set; }
+    [BindProperty]
+    public List<ToppingAmount> ExtraToppings { get; set; }
     
     public IndexModel(IMemoryCache cache)
     {
@@ -33,7 +35,7 @@ public class IndexModel : PageModel
     }
     
     public void OnGet() { }
-
+    
     public void OnPostCustomer()
     {
         Customer customer = Customer.GetInstance(Name, Town, Street, HouseNumber, ZipCode);
@@ -42,14 +44,21 @@ public class IndexModel : PageModel
 
         _cache.Set<Order>("Order", this.CurrentOrder);
     }
-
+    
     public void OnPostAddPizza(int amount)
     {
+        if (amount < 1) amount = 1;
         this.CurrentOrder = _cache.Get<Order>("Order");
+        if (CurrentOrder == null) return;
         this.Order = true;
         Pizza pizza = new Pizza((PizzaName)PizzaName);
         pizza.VisitLibrary();
-        // todo add extra toppings
+
+        foreach (ToppingAmount toppingAmount in ExtraToppings) {
+            if (!toppingAmount.Add) continue;
+            pizza.AddTopping(toppingAmount.GetToppingName(), toppingAmount.Amount);
+        }
+        
         this.CurrentOrder.AddPizza(pizza, amount);
         this.CurrentOrder = _cache.Set<Order>("Order", this.CurrentOrder);
     }

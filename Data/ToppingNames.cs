@@ -6,5 +6,6 @@ public enum ToppingNames
     Salami,
     Ananas,
     Champignons,
-    Kaas
+    Kaas,
+    Tonijn
 }
