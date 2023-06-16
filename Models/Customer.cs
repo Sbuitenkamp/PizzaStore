@@ -1,11 +1,18 @@
+using Newtonsoft.Json;
+
 namespace PizzaStore.Models;
 
 // Singleton pattern
 public class Customer
 {
     private static Customer Instance = null;
-    private string Name, City, Street, HouseNumber, ZipCode;
+    public string Name { get; }
+    public string City { get; }
+    public string Street { get; }
+    public string HouseNumber { get; }
+    public string ZipCode { get; }
 
+    [JsonConstructor]
     private Customer(string name, string city, string street, string houseNumber, string zipCode)
     {
         this.Name = name;
@@ -14,7 +21,7 @@ public class Customer
         this.HouseNumber = houseNumber;
         this.ZipCode = zipCode;
     }
-
+    
     public static Customer GetInstance(string name, string city, string street, string houseNumber, string zipCode)
     {
         return Instance = new Customer(name, city, street, houseNumber, zipCode);
@@ -24,6 +31,16 @@ public class Customer
     {
         if (Instance == null) throw new Exception("Customer has not been initialized, consider passing some arguments.");
         return Instance;
+    }
+
+    public static Customer FromJson(string json)
+    {
+        if (json.StartsWith("{\"OrderCustomer\":")) {
+            json = json.Substring("{\"OrderCustomer\":".Length);
+            json = json.Remove(json.IndexOf("}", StringComparison.Ordinal), 1);
+        }
+        
+        return JsonConvert.DeserializeObject<Customer>(json);
     }
 
     public override string ToString()

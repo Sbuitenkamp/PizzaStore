@@ -1,3 +1,5 @@
+using Newtonsoft.Json;
+
 namespace PizzaStore.Models;
 
 public class Order
@@ -5,8 +7,16 @@ public class Order
     public Customer OrderCustomer { get; private set; }
     public List<PizzaAmount> Pizzas { get; private set; }
     public DateTime TimeOfOrder { get; private set; }
-    
-    public Order() {}
+
+    public Order() { }
+
+    [JsonConstructor]
+    public Order(Customer customer, List<PizzaAmount> pizzas)
+    {
+        this.OrderCustomer = customer;
+        this.TimeOfOrder = DateTime.Now;
+        this.Pizzas = pizzas;
+    }
     public Order(Customer customer)
     {
         this.OrderCustomer = customer;
@@ -18,7 +28,11 @@ public class Order
     {
         PizzaAmount amountOfPizzas = new PizzaAmount(amount, pizza);
         this.Pizzas.Add(amountOfPizzas);
+    }
 
+    public void AddPizzas(IEnumerable<PizzaAmount> pizzas)
+    {
+        this.Pizzas.AddRange(pizzas);
     }
 
     public override string ToString()

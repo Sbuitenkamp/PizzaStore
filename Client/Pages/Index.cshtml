@@ -13,14 +13,19 @@
     <meta charset="UTF-8">
     <title>Pizza Store</title>
     <script defer src="js/main.js"></script>
+    <script>
+        // enum convert
+        const pizzaNamesEnum = @(EnumHelper.EnumToString<PizzaName>());
+        const toppingsEnum = @(EnumHelper.EnumToString<ToppingNames>());
+    </script>
 </head>
 <body>
-    <h1>Pizza Store</h1>
-<button onclick="openConnection()" style="margin-right: 60%">Upgrade Connection</button>
+<h1>Pizza Store</h1>
 <div class="left" style="float: left; width:  50%;">
 
 @if (!Model.Order) {
-    <form method="post" asp-page-handler="Customer">
+    <button id="websocketButton" onclick="openConnection()" style="margin-right: 60%">Upgrade Connection</button>
+    <form method="post" asp-page-handler="Customer" id="Customer">
         <label for="Name">Naam:
             <input asp-for="Name">
         </label>
@@ -37,14 +42,14 @@
             <input asp-for="ZipCode">
         </label>
         <br>
-        <label for="Town">Woonplaats:
-            <input asp-for="Town">
+        <label for="City">Woonplaats:
+            <input asp-for="City">
         </label>
         <br>
-        <input type="submit" value="Verder">
+        <input type="submit" value="Verder" id="CustomerSubmit">
     </form>
 } else  {
-    <form method="post" asp-page-handler="AddPizza">
+    <form method="post" asp-page-handler="AddPizza" id="AddPizza">
         <label for="PizzaName">Selecteer een pizza:
             <select asp-for="PizzaName">
                 @foreach (int pizzaName in Enum.GetValues(typeof(PizzaName))) {
@@ -63,7 +68,7 @@
         <label for="Amount">Aantal pizzas:
             <input type="number" name="amount" id="Amount" value="1">
         </label>
-        <input type="submit" value="Toevoegen">
+        <input type="submit" value="Toevoegen" id="PizzaAddSubmit">
     </form>
 }
 </div>

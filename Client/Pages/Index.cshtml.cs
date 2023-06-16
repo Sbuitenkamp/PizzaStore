@@ -23,7 +23,7 @@ public class IndexModel : PageModel
     [BindProperty]
     public string ZipCode { get; set; }
     [BindProperty]
-    public string Town { get; set; }
+    public string City { get; set; }
     [BindProperty]
     public int PizzaName { get; set; }
     [BindProperty]
@@ -38,7 +38,7 @@ public class IndexModel : PageModel
     
     public void OnPostCustomer()
     {
-        Customer customer = Customer.GetInstance(Name, Town, Street, HouseNumber, ZipCode);
+        Customer customer = Customer.GetInstance(Name, City, Street, HouseNumber, ZipCode);
         this.CurrentOrder = new Order(customer);
         this.Order = true;
 

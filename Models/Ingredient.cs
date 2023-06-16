@@ -1,3 +1,5 @@
+using Newtonsoft.Json;
+
 namespace PizzaStore.Models;
 
 public abstract class Ingredient

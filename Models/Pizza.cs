@@ -1,12 +1,31 @@
 using System.Diagnostics;
+using Newtonsoft.Json;
 using PizzaStore.Data;
 
 namespace PizzaStore.Models;
 
 public class Pizza : Ingredient
 {
-    private List<Ingredient> Ingredients;
+    public List<Ingredient> Ingredients { get; }
     private PizzaName Type;
+    
+    // todo make 12 fucking constructors so newtonsoft shuts the fuck up
+    [JsonConstructor]
+    public Pizza(string name, List<Topping> ingredients, int amount = 1) : base(name, amount)
+    {
+        this.Type = (PizzaName)Enum.Parse(typeof(PizzaName), name);
+        // every pizza has these base ingredients
+        List<Ingredient> baseIngredients = new List<Ingredient>
+        {
+            new Dough(),
+            new Sauce(),
+            new Topping(ToppingNames.Kaas, 1)
+        };
+        this.Ingredients = baseIngredients;
+        this.VisitLibrary();
+        this.MergeToppings(ingredients);
+    }
+    
     public Pizza(PizzaName name, int amount = 1) : base(name.ToString(), amount)
     {
         this.Type = name;
@@ -18,7 +37,7 @@ public class Pizza : Ingredient
             new Topping(ToppingNames.Kaas, 1)
         };
     }
-    
+
     public void VisitLibrary()
     { 
         // visit the ingredient library and gather ingredients based on the pizza type
@@ -50,5 +69,12 @@ public class Pizza : Ingredient
             result += $"  {ingredient.Name} x{ingredient.Amount}\n";
         }
         return result;
+    }
+    
+    private void MergeToppings(List<Topping> ingredients)
+    {
+        foreach (Topping ingredient in ingredients) {
+            this.AddTopping((ToppingNames)Enum.Parse(typeof(ToppingNames), ingredient.Name), ingredient.Amount);
+        }
     }
 }
