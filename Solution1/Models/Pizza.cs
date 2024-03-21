@@ -9,7 +9,6 @@ public class Pizza : Ingredient
     public List<Ingredient> Ingredients { get; }
     private PizzaName Type;
     
-    // todo make 12 fucking constructors so newtonsoft shuts the fuck up
     [JsonConstructor]
     public Pizza(string name, List<Topping> ingredients, int amount = 1) : base(name, amount)
     {
@@ -36,12 +35,8 @@ public class Pizza : Ingredient
             new Sauce(),
             new Topping(ToppingNames.Kaas, 1)
         };
-    }
-
-    public void VisitLibrary()
-    { 
-        // visit the ingredient library and gather ingredients based on the pizza type
-        this.Ingredients.AddRange(IngredientLibrary.GatherIngredients(this.Type));
+        
+        this.VisitLibrary();
     }
 
     // add extra toppings 
@@ -69,6 +64,12 @@ public class Pizza : Ingredient
             result += $"  {ingredient.Name} x{ingredient.Amount}\n";
         }
         return result;
+    }
+   
+    private void VisitLibrary()
+    { 
+        // visit the ingredient library and gather ingredients based on the pizza type
+        this.Ingredients.AddRange(IngredientLibrary.GatherIngredients(this.Type));
     }
     
     private void MergeToppings(List<Topping> ingredients)

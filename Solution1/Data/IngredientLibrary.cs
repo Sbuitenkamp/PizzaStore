@@ -2,7 +2,7 @@ using PizzaStore.Models;
 
 namespace PizzaStore.Data;
 
-// visitor pattern
+// visitor pattern attempt
 public static class IngredientLibrary
 {
     public static List<Ingredient> GatherIngredients(PizzaName name)
@@ -25,6 +25,8 @@ public static class IngredientLibrary
             case PizzaName.Tonno:
                 ingredients.Add(new Topping(ToppingNames.Tonijn, 1));
                 break;
+            default:
+                throw new ArgumentOutOfRangeException(nameof(name), name, null);
         }
 
         return ingredients;

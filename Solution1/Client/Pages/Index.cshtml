@@ -76,7 +76,7 @@
 @if (Model.Order) {
     <div class="right" style="float: right; width:  50%;">
         <h1>Bestellingoverzicht</h1>
-        <p>Bezorgen bij: @Model.CurrentOrder.OrderCustomer.ToString()</p>
+        <p>Bezorgen bij: @Customer.Instance.ToString()</p>
         @foreach (PizzaAmount pizzaAmount in Model.CurrentOrder.Pizzas) {
             <p>@pizzaAmount.Amount @pizzaAmount.PizzaType.ToString()</p>
         }

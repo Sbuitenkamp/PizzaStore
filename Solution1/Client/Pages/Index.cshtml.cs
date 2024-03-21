@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System.Text.RegularExpressions;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Caching.Memory;
 using PizzaStore.Data;
@@ -10,8 +11,10 @@ namespace PizzaStore.Pages;
 public class IndexModel : PageModel
 {
     private readonly IMemoryCache _cache;
-    public Order CurrentOrder { get; set; }
+    private string _zipCode;
+    private int _pizzaName;
     
+    public Order CurrentOrder { get; set; }
     public bool Order { get; set; }
     
     [BindProperty]
@@ -21,11 +24,27 @@ public class IndexModel : PageModel
     [BindProperty]
     public string HouseNumber { get; set; }
     [BindProperty]
-    public string ZipCode { get; set; }
+    public string ZipCode
+    {
+        get => _zipCode;
+        set
+        {
+            // 1234 AB && 1234ab == true
+            const string pattern = "^[0-9]{4}( ?)([A-z]{2})$";
+            if (Regex.Match(value, pattern, RegexOptions.None).Success) _zipCode = value;
+        }
+    }
     [BindProperty]
     public string City { get; set; }
     [BindProperty]
-    public int PizzaName { get; set; }
+    public int PizzaName
+    {
+        get => _pizzaName;
+        set
+        {
+            if (value is >= 0 and <= 4) _pizzaName = value;
+        } 
+    }
     [BindProperty]
     public List<ToppingAmount> ExtraToppings { get; set; }
     
@@ -38,9 +57,9 @@ public class IndexModel : PageModel
     
     public void OnPostCustomer()
     {
-        Customer customer = Customer.GetInstance(Name, City, Street, HouseNumber, ZipCode);
-        this.CurrentOrder = new Order(customer);
+        this.CurrentOrder = new Order();
         this.Order = true;
+        Customer.Instance.Construct(Name, City, Street, HouseNumber, ZipCode);
 
         _cache.Set<Order>("Order", this.CurrentOrder);
     }
@@ -48,11 +67,9 @@ public class IndexModel : PageModel
     public void OnPostAddPizza(int amount)
     {
         if (amount < 1) amount = 1;
-        this.CurrentOrder = _cache.Get<Order>("Order");
-        if (CurrentOrder == null) return;
+        this.CurrentOrder = _cache.Get<Order>("Order") ?? new Order();
         this.Order = true;
         Pizza pizza = new Pizza((PizzaName)PizzaName);
-        pizza.VisitLibrary();
 
         foreach (ToppingAmount toppingAmount in ExtraToppings) {
             if (!toppingAmount.Add) continue;

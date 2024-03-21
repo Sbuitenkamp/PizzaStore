@@ -1,13 +1,14 @@
 using System.Net.WebSockets;
 using System.Text;
 using Newtonsoft.Json;
+using PizzaStore.Models.Security;
 
 namespace PizzaStore.Models;
 
 public class WebSocketHandler : IWebSocketHandler
 {
     public List<SocketConnection> websocketConnections = new List<SocketConnection>();
-    private Order CurrentOrder = null;
+    private Order? CurrentOrder = null;
 
     public async Task Handle(Guid id, WebSocket webSocket)
     {
@@ -34,16 +35,13 @@ public class WebSocketHandler : IWebSocketHandler
         string jsonString = Encoding.ASCII.GetString(buffer);
         if (CurrentOrder == null) {
             // necessary because of the singleton architecture
-            Customer customer = Customer.FromJson(jsonString);
-            CurrentOrder = new Order(customer);
+            Customer.Instance.FromJson(jsonString);
+            CurrentOrder = new Order();
         } else {
-            Order tempOrder = JsonConvert.DeserializeObject<Order>(jsonString);
+            Order tempOrder = MessageInspector.ParseJson<Order>(jsonString);
             CurrentOrder.AddPizzas(tempOrder.Pizzas);
         }
-        string jsonSerialized = JsonConvert.SerializeObject(CurrentOrder);
-        // Console.WriteLine(jsonSerialized);
-        await SendMessageToSockets(jsonSerialized);
-        return null;
+        return JsonConvert.SerializeObject(CurrentOrder);
     }
 
     private async Task SendMessageToSockets(string message)

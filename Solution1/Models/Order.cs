@@ -4,22 +4,17 @@ namespace PizzaStore.Models;
 
 public class Order
 {
-    public Customer OrderCustomer { get; private set; }
     public List<PizzaAmount> Pizzas { get; private set; }
     public DateTime TimeOfOrder { get; private set; }
 
-    public Order() { }
-
     [JsonConstructor]
-    public Order(Customer customer, List<PizzaAmount> pizzas)
+    public Order(List<PizzaAmount> pizzas)
     {
-        this.OrderCustomer = customer;
         this.TimeOfOrder = DateTime.Now;
         this.Pizzas = pizzas;
     }
-    public Order(Customer customer)
+    public Order()
     {
-        this.OrderCustomer = customer;
         this.TimeOfOrder = DateTime.Now;
         this.Pizzas = new List<PizzaAmount>();
     }

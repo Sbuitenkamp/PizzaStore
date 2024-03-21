@@ -28,12 +28,11 @@ function openConnection() {
     socket.onmessage = function(event) {
         const msg = JSON.parse(event.data);
         console.log(`[message] Data received from server: `);
-        // console.log(msg);
+        console.log(msg);
         if (msg.Pizzas.length > 0) {
             order.Pizzas = msg.Pizzas;
             reRenderOrder();
-        } else if (msg.OrderCustomer) {
-            order.OrderCustomer = msg.OrderCustomer;
+        } else {
             order.TimeOfOrder = new Date(msg.TimeOfOrder).toLocaleDateString('nl-NL', { weekday:"long", year:"numeric", month:"short", day:"numeric"});
             renderPizzaForm();
         }
@@ -124,7 +123,9 @@ function reRenderOrder() {
 }
 
 function createOrder(form) {
-    sendMessage(parseForm(form));
+    const result = parseForm(form);
+    order.OrderCustomer = {...result.OrderCustomer};
+    sendMessage(result);
 }
 
 function addToOrder() {
@@ -132,7 +133,6 @@ function addToOrder() {
     const rightContainer = document.querySelector("div.right");
     const result = parseForm(pizzaForm);
     sendMessage(result);
-    // `<p>@pizzaAmount.Amount @pizzaAmount.PizzaType.ToString()</p>`
 }
 
 function parseForm(form) {
