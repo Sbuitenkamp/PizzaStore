@@ -6,6 +6,7 @@ Design patterns:
 
 Secure Design Pattern: 
  - input validation
+ - message inspection
 
 ## Running the web socket server
 Navigate to `Web/WebSocketServer/` and run the command
