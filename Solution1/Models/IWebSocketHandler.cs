@@ -1,8 +1,8 @@
-using System.Net.WebSockets;
+using Fleck;
 
 namespace PizzaStore.Models;
 
 public interface IWebSocketHandler
 {
-    Task Handle(Guid id, WebSocket websocket);
+    Task Handle(Guid id, string websocket);
 }

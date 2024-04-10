@@ -4,14 +4,18 @@ const order = {
     OrderCustomer: {},
     Pizzas: [],
     TimeOfOrder: null
-}
+};
+const key = [
+    0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08,
+    0x09, 0x10, 0x11, 0x12, 0x13, 0x14, 0x15, 0x16
+];
 
 window.addEventListener("load", () => {
     forms = document.querySelectorAll("form");
 });
 
 function openConnection() {
-    socket = new WebSocket('ws://localhost:5050/ws');
+    socket = new WebSocket('wss://127.0.0.1:8143');
 
     socket.onopen = function(e) {
         // disable the regular HTTP functions
@@ -25,7 +29,8 @@ function openConnection() {
         console.log("[open] Connection established");
     };
 
-    socket.onmessage = function(event) {
+    socket.onmessage = async function(event) {
+        // const msg = await decrypt(event.data);
         const msg = JSON.parse(event.data);
         console.log(`[message] Data received from server: `);
         console.log(msg);
@@ -189,4 +194,15 @@ function parseForm(form) {
     }
     
     return result;
+}
+
+function encrypt(message) {
+    return CryptoJS.AES.encrypt(message, key).toString();
+}
+async function decrypt(encryptedMessage) {
+    const encryptedBytes = await CryptoJS.AES.decrypt(encryptedMessage, key, { mode: CryptoJS.mode.ECB });
+    console.log(encryptedBytes)
+    const bytes = encryptedBytes.toString(CryptoJS.enc.Utf8);
+    console.log(bytes)
+    return JSON.parse(bytes);
 }

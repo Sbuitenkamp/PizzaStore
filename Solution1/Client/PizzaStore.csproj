@@ -41,4 +41,10 @@
       <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Reference Include="Fleck">
+        <HintPath>..\..\..\..\..\..\.nuget\packages\fleck\1.2.0\lib\netcoreapp2.0\Fleck.dll</HintPath>
+      </Reference>
+    </ItemGroup>
+
 </Project>
