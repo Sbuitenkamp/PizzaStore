@@ -6,6 +6,7 @@ public class Order
 {
     public List<PizzaAmount> Pizzas { get; private set; }
     public DateTime TimeOfOrder { get; private set; }
+    public Customer Customer { get; set; }
 
     [JsonConstructor]
     public Order(List<PizzaAmount> pizzas)
@@ -13,10 +14,15 @@ public class Order
         this.TimeOfOrder = DateTime.Now;
         this.Pizzas = pizzas;
     }
+
     public Order()
     {
         this.TimeOfOrder = DateTime.Now;
-        this.Pizzas = new List<PizzaAmount>();
+        this.Pizzas = new List<PizzaAmount>(); 
+    }
+    public Order(Customer customer): this()
+    {
+        this.Customer = customer;
     }
 
     public void AddPizza(Pizza pizza, int amount = 1) // optional parameter

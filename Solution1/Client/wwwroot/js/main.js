@@ -15,7 +15,7 @@ window.addEventListener("load", () => {
 });
 
 function openConnection() {
-    socket = new WebSocket('wss://127.0.0.1:8143');
+    socket = new WebSocket('wss://localhost:8181');
 
     socket.onopen = function(e) {
         // disable the regular HTTP functions

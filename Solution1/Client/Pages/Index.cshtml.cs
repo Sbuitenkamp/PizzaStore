@@ -8,6 +8,7 @@ using PizzaStore.Models;
 namespace PizzaStore.Pages;
 
 [BindProperties]
+[RequireHttps]
 public class IndexModel : PageModel
 {
     private readonly IMemoryCache _cache;
@@ -57,9 +58,9 @@ public class IndexModel : PageModel
     
     public void OnPostCustomer()
     {
-        this.CurrentOrder = new Order();
+        Customer customer = new Customer(Name, City, Street, HouseNumber, ZipCode);
+        this.CurrentOrder = new Order(customer);
         this.Order = true;
-        Customer.Instance.Construct(Name, City, Street, HouseNumber, ZipCode);
 
         _cache.Set<Order>("Order", this.CurrentOrder);
     }

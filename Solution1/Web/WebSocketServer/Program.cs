@@ -1,36 +1,54 @@
-using System.Net;
-using System.Net.WebSockets;
 using System.Security.Cryptography.X509Certificates;
 using Fleck;
 using PizzaStore.Models;
+using System.Security.Authentication;
+using Newtonsoft.Json;
 
 namespace WebsocketServer
 {
     class Program
     {
-        static void Main() // PEMPASS
+        // TODO add extra design pattern (builder pizza)
+        static void Main()
         {
-            List<IWebSocketConnection> allSockets = new List<IWebSocketConnection>();
-            WebSocketServer server = new WebSocketServer("wss://127.0.0.1:8143");
-            WebSocketHandler handler = new WebSocketHandler();
-            server.Certificate = new X509Certificate2("Data/Security/certificate.pfx");
+            Dictionary<Guid, Order?> CurrentOrders = new Dictionary<Guid, Order?>();
+            Dictionary<Guid, IWebSocketConnection> allSockets = new Dictionary<Guid, IWebSocketConnection>();
+            WebSocketServer server = new WebSocketServer("wss://0.0.0.0:8181")
+            {
+                EnabledSslProtocols = SslProtocols.Tls12 | SslProtocols.Tls13
+            };
+            string certPem = File.ReadAllText("Data/Security/certificate.crt");
+            string keyPem = File.ReadAllText("Data/Security/private.key");
+            server.Certificate = X509Certificate2.CreateFromPem(certPem, keyPem);
             server.Start(socket =>
             {
                 socket.OnOpen = () =>
                 {
                     Console.WriteLine("Open!");
-                    allSockets.Add(socket);
+                    Guid guid = Guid.NewGuid();
+                    allSockets.Add(guid, socket);
                 };
                 socket.OnClose = () =>
                 {
+                    Guid guid = allSockets.First(x => x.Value == socket).Key;
                     Console.WriteLine("Close!");
-                    allSockets.Remove(socket);
+                    allSockets.Remove(guid);
                 };
                 socket.OnMessage = async message =>
                 {
-                    Console.WriteLine(message);
-                    string? received = await handler.ReceiveMessage(new Guid(), message);
-                    if (received != null) allSockets.ToList().ForEach(s => s.Send("Echo: " + message));
+                    Guid guid = allSockets.First(x => x.Value == socket).Key;
+                    Order? order;
+
+                    try { // prevent not recognised key exception
+                        order = CurrentOrders[guid];
+                    } catch {
+                        order = null;
+                    }
+                    
+                    Order? receivedOrder = WebSocketHandler.Instance.ReceiveMessage(message, order);
+                    if (order == null && receivedOrder != null) CurrentOrders.Add(guid, receivedOrder);
+                    string msg = JsonConvert.SerializeObject(receivedOrder);
+                    if (receivedOrder != null) await socket.Send(msg);
                 };
             });
             
@@ -39,7 +57,7 @@ namespace WebsocketServer
             {
                 foreach (var socket in allSockets.ToList())
                 {
-                    socket.Send(input);
+                    socket.Value.Send(input);
                 }
                 input = Console.ReadLine();
             }
