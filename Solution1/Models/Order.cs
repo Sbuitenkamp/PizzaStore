@@ -33,6 +33,16 @@ public class Order
 
     public void AddPizzas(IEnumerable<PizzaAmount> pizzas)
     {
+        List<PizzaAmount> pizzaList = new List<PizzaAmount>();
+        foreach (PizzaAmount pizzaAmount in pizzas) {
+            PizzaBuilder builder = new PizzaBuilder(pizzaAmount.PizzaType.Name);
+            List<Topping> toppings = new List<Topping>();
+            foreach (var topping in pizzaAmount.PizzaType.Ingredients.Where(x => x.GetType() == typeof(Topping)).ToList()) {
+                toppings.Add((Topping)topping);
+            }
+            builder.BuildPizza(toppings);
+            pizzaList.Add(new PizzaAmount(pizzaAmount.Amount, builder.FinishPizza()));
+        }
         this.Pizzas.AddRange(pizzas);
     }
 

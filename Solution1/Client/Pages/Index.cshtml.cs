@@ -70,14 +70,15 @@ public class IndexModel : PageModel
         if (amount < 1) amount = 1;
         this.CurrentOrder = _cache.Get<Order>("Order") ?? new Order();
         this.Order = true;
-        Pizza pizza = new Pizza((PizzaName)PizzaName);
-
+        PizzaBuilder builder = new PizzaBuilder((PizzaName)PizzaName);
+        builder.BuildPizza();
+        
         foreach (ToppingAmount toppingAmount in ExtraToppings) {
             if (!toppingAmount.Add) continue;
-            pizza.AddTopping(toppingAmount.GetToppingName(), toppingAmount.Amount);
+            builder.AddTopping(toppingAmount.GetToppingName(), toppingAmount.Amount);
         }
         
-        this.CurrentOrder.AddPizza(pizza, amount);
+        this.CurrentOrder.AddPizza(builder.FinishPizza(), amount);
         this.CurrentOrder = _cache.Set<Order>("Order", this.CurrentOrder);
     }
 }

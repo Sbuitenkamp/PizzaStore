@@ -8,7 +8,6 @@ namespace WebsocketServer
 {
     class Program
     {
-        // TODO add extra design pattern (builder pizza)
         static void Main()
         {
             Dictionary<Guid, Order?> CurrentOrders = new Dictionary<Guid, Order?>();
@@ -24,14 +23,14 @@ namespace WebsocketServer
             {
                 socket.OnOpen = () =>
                 {
-                    Console.WriteLine("Open!");
                     Guid guid = Guid.NewGuid();
+                    Console.WriteLine("Opened connection to: " + guid.ToString());
                     allSockets.Add(guid, socket);
                 };
                 socket.OnClose = () =>
                 {
                     Guid guid = allSockets.First(x => x.Value == socket).Key;
-                    Console.WriteLine("Close!");
+                    Console.WriteLine("Closed connection with: " + guid.ToString());
                     allSockets.Remove(guid);
                 };
                 socket.OnMessage = async message =>
@@ -52,13 +51,10 @@ namespace WebsocketServer
                 };
             });
             
+            // prevent shut down
             var input = Console.ReadLine();
             while (input != "exit")
             {
-                foreach (var socket in allSockets.ToList())
-                {
-                    socket.Value.Send(input);
-                }
                 input = Console.ReadLine();
             }
         }

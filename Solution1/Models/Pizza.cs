@@ -8,7 +8,7 @@ public class Pizza : Ingredient
 {
     public List<Ingredient> Ingredients { get; }
     private PizzaName Type;
-    
+
     [JsonConstructor]
     public Pizza(string name, List<Topping> ingredients, int amount = 1) : base(name, amount)
     {
@@ -24,7 +24,7 @@ public class Pizza : Ingredient
         this.VisitLibrary();
         this.MergeToppings(ingredients);
     }
-    
+
     public Pizza(PizzaName name, int amount = 1) : base(name.ToString(), amount)
     {
         this.Type = name;
@@ -35,7 +35,7 @@ public class Pizza : Ingredient
             new Sauce(),
             new Topping(ToppingNames.Kaas, 1)
         };
-        
+
         this.VisitLibrary();
     }
 
@@ -44,8 +44,8 @@ public class Pizza : Ingredient
     {
         Ingredient hasIngredient = Ingredients.Find(x => x.Name == topping.ToString());
         if (hasIngredient != null) {
-           if (amount == 1) hasIngredient.AddOne();
-           else hasIngredient.AddAmount(amount);
+            if (amount == 1) hasIngredient.AddOne();
+            else hasIngredient.AddAmount(amount);
         } else this.Ingredients.Add(new Topping(topping, amount));
     }
 
@@ -63,16 +63,17 @@ public class Pizza : Ingredient
             if (ingredient is Dough) continue;
             result += $"  {ingredient.Name} x{ingredient.Amount}\n";
         }
+
         return result;
     }
-   
-    private void VisitLibrary()
-    { 
+
+    public void VisitLibrary()
+    {
         // visit the ingredient library and gather ingredients based on the pizza type
         this.Ingredients.AddRange(IngredientLibrary.GatherIngredients(this.Type));
     }
-    
-    private void MergeToppings(List<Topping> ingredients)
+
+    public void MergeToppings(List<Topping> ingredients)
     {
         foreach (Topping ingredient in ingredients) {
             this.AddTopping((ToppingNames)Enum.Parse(typeof(ToppingNames), ingredient.Name), ingredient.Amount);
